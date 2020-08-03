@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.cts.hospital.exception.RecordNotFoundException;
@@ -12,6 +14,7 @@ import com.cts.hospital.model.EmployeeEntity;
 import com.cts.hospital.repository.EmployeeRepository;
  
 @Service
+@CacheConfig(cacheNames={"employee"})   
 public class EmployeeService {
      
     @Autowired
@@ -28,6 +31,7 @@ public class EmployeeService {
         }
     }
      
+    @Cacheable(value="cacheEmployee", key="#id")  
     public EmployeeEntity getEmployeeById(Long id) throws RecordNotFoundException
     {
         Optional<EmployeeEntity> employee = repository.findById(id);
