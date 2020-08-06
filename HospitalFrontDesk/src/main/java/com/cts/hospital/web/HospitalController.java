@@ -15,43 +15,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.hospital.exception.RecordNotFoundException;
-import com.cts.hospital.model.EmployeeEntity;
-import com.cts.hospital.service.EmployeeService;
- 
+import com.cts.hospital.model.SpcialistEntity;
+import com.cts.hospital.service.SpecialistService;
+
 @RestController
-@RequestMapping("/employees")
-public class HospitalController
-{
-    @Autowired
-    EmployeeService service;
- 
-    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployees() {
-        List<EmployeeEntity> list = service.getAllEmployees();
- 
-        return new ResponseEntity<List<EmployeeEntity>>(list, new HttpHeaders(), HttpStatus.OK);
-    }
- 
-    @GetMapping(value="/{id}",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<EmployeeEntity> getEmployeeById(@PathVariable("id") Long id)
-                                                    throws RecordNotFoundException {
-        EmployeeEntity entity = service.getEmployeeById(id);
- 
-        return new ResponseEntity<EmployeeEntity>(entity, new HttpHeaders(), HttpStatus.OK);
-    }
- 
-    @PostMapping
-    public ResponseEntity<EmployeeEntity> createOrUpdateEmployee(EmployeeEntity employee)
-                                                    throws RecordNotFoundException {
-        EmployeeEntity updated = service.createOrUpdateEmployee(employee);
-        return new ResponseEntity<EmployeeEntity>(updated, new HttpHeaders(), HttpStatus.OK);
-    }
- 
-    @DeleteMapping("/{id}")
-    public HttpStatus deleteEmployeeById(@PathVariable("id") Long id)
-                                                    throws RecordNotFoundException {
-        service.deleteEmployeeById(id);
-        return HttpStatus.FORBIDDEN;
-    }
- 
+@RequestMapping("${hospital.root.path}")
+public class HospitalController {
+
+	@Autowired
+	SpecialistService service;
+
+	@GetMapping(value = "${all.specialist}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<SpcialistEntity>> getAllSpecialist() {
+		List<SpcialistEntity> list = service.getAllSpecialist();
+
+		return new ResponseEntity<List<SpcialistEntity>>(list, new HttpHeaders(), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "${specialist.by.id}{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<SpcialistEntity> getSpecialistById(@PathVariable("id") Long id)
+			throws RecordNotFoundException {
+		SpcialistEntity entity = service.getSpecialistById(id);
+
+		return new ResponseEntity<SpcialistEntity>(entity, new HttpHeaders(), HttpStatus.OK);
+	}
+
+	@PostMapping(value = "${specialist.update}")
+	public ResponseEntity<SpcialistEntity> createOrUpdateSpecialist(SpcialistEntity specialist)
+			throws RecordNotFoundException {
+		SpcialistEntity updated = service.createOrUpdateSpecialist(specialist);
+		return new ResponseEntity<SpcialistEntity>(updated, new HttpHeaders(), HttpStatus.OK);
+	}
+
+	@DeleteMapping("${specialist.delete}{id}")
+	public HttpStatus deleteSpecialistById(@PathVariable("id") Long id) throws RecordNotFoundException {
+		service.deleteSpecialistById(id);
+		return HttpStatus.FORBIDDEN;
+	}
+
 }
