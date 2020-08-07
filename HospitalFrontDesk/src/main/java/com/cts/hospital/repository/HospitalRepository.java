@@ -2,6 +2,8 @@ package com.cts.hospital.repository;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.cts.hospital.config.HospitalPropperties.Hospital.Specialist;
 import com.cts.hospital.exception.BusinessValidationException;
 import com.cts.hospital.exception.RecordNotFoundException;
@@ -21,5 +23,8 @@ public interface HospitalRepository {
 			String patientName) throws BusinessValidationException, RecordNotFoundException;
 
 	public String getBedsForAdmission(String hospitalName) throws BusinessValidationException, RecordNotFoundException;
+
+	public ResponseEntity<?> testSpecialistEndPoint(String port, String environment, String outputFormat,
+			String hospitalName, String specialistType) throws BusinessValidationException, RecordNotFoundException;
 
 }
