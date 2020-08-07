@@ -11,11 +11,28 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.cts.hospital.model.CustomErrorResponse;
 
+/**
+ * 
+ * @author Sumesh Jacob (327723)
+ *
+ */
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<CustomErrorResponse> customHandleNotFound(Exception ex, WebRequest request) {
+
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimestamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.NOT_FOUND.value());
+
+		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<CustomErrorResponse> customGenericExceptionHandler(Exception ex, WebRequest request) {
 
 		CustomErrorResponse errors = new CustomErrorResponse();
 		errors.setTimestamp(LocalDateTime.now());

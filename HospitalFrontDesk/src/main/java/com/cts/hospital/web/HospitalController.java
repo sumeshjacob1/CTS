@@ -7,50 +7,61 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cts.hospital.config.HospitalPropperties;
+import com.cts.hospital.exception.BusinessValidationException;
 import com.cts.hospital.exception.RecordNotFoundException;
-import com.cts.hospital.model.SpcialistEntity;
-import com.cts.hospital.service.SpecialistService;
+import com.cts.hospital.model.AppointmentResponse;
+import com.cts.hospital.service.HospitalService;
 
+/**
+ * 
+ * @author Sumesh Jacob (327723)
+ *
+ */
 @RestController
-@RequestMapping("${hospital.root.path}")
+@RequestMapping("${rootPath}")
 public class HospitalController {
 
 	@Autowired
-	SpecialistService service;
+	HospitalService service;
 
-	@GetMapping(value = "${all.specialist}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<SpcialistEntity>> getAllSpecialist() {
-		List<SpcialistEntity> list = service.getAllSpecialist();
+	@GetMapping(value = "${specialistByHospitalNameAndSpecialistType}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<HospitalPropperties.Hospital.Specialist>> getSpecialistsByHospital(
+			@PathVariable("name") String hospitalName, @PathVariable("type") String specialistType)
+			throws BusinessValidationException, RecordNotFoundException {
 
-		return new ResponseEntity<List<SpcialistEntity>>(list, new HttpHeaders(), HttpStatus.OK);
+		List<HospitalPropperties.Hospital.Specialist> list = service.getSpecialistByHospital(hospitalName,
+				specialistType);
+
+		return new ResponseEntity<List<HospitalPropperties.Hospital.Specialist>>(list, new HttpHeaders(),
+				HttpStatus.OK);
 	}
 
-	@GetMapping(value = "${specialist.by.id}{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<SpcialistEntity> getSpecialistById(@PathVariable("id") Long id)
-			throws RecordNotFoundException {
-		SpcialistEntity entity = service.getSpecialistById(id);
+	@GetMapping(value = "${getAppointment}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<AppointmentResponse> getAppointment(@PathVariable("hospitalName") String hospitalName,
+			@PathVariable("specialistName") String specialistName, @PathVariable("day") String day,
+			@PathVariable("patientName") String patientName)
+			throws BusinessValidationException, RecordNotFoundException {
 
-		return new ResponseEntity<SpcialistEntity>(entity, new HttpHeaders(), HttpStatus.OK);
+		AppointmentResponse response = service.getAppointment(hospitalName, specialistName, day, patientName);
+
+		return new ResponseEntity<AppointmentResponse>(response, new HttpHeaders(), HttpStatus.OK);
 	}
 
-	@PostMapping(value = "${specialist.update}")
-	public ResponseEntity<SpcialistEntity> createOrUpdateSpecialist(SpcialistEntity specialist)
-			throws RecordNotFoundException {
-		SpcialistEntity updated = service.createOrUpdateSpecialist(specialist);
-		return new ResponseEntity<SpcialistEntity>(updated, new HttpHeaders(), HttpStatus.OK);
-	}
+	@GetMapping(value = "${getAvailableBeds}", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> getBedsForAdmission(@PathVariable("hospitalName") String hospitalName)
+			throws BusinessValidationException, RecordNotFoundException {
 
-	@DeleteMapping("${specialist.delete}{id}")
-	public HttpStatus deleteSpecialistById(@PathVariable("id") Long id) throws RecordNotFoundException {
-		service.deleteSpecialistById(id);
-		return HttpStatus.FORBIDDEN;
+		String response = service.getBedsForAdmission(hospitalName);
+
+		return new ResponseEntity<String>(response, new HttpHeaders(), HttpStatus.OK);
 	}
 
 }
