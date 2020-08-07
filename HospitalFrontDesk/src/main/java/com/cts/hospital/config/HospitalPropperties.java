@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Component
 @ConfigurationProperties
-@PropertySource("classpath:specialist.properties")
+@PropertySource("file:E:\\GIT_REPOS\\CTS\\HospitalFrontDesk\\specialist.properties")
 @Validated
 public class HospitalPropperties {
 
